@@ -24,9 +24,9 @@ Vagrant.configure( "2" ) do |config|
     vb.customize [ 'modifyvm', :id, '--uartmode1', 'disconnected' ]
   end
 
-  # configure virtual machine
+  # configure USB interfaces and device filters
   config.vm.provider "virtualbox" do |vb|
-    # enable USB
+    # enable USB interfaces
     vb.customize [ "modifyvm", :id, "--usb",     "on" ] # USB 1.x
     vb.customize [ "modifyvm", :id, "--usbehci", "on" ] # USB 2.x
     vb.customize [ "modifyvm", :id, "--usbxhci", "on" ] # USB 3.x
@@ -45,8 +45,8 @@ Vagrant.configure( "2" ) do |config|
   config.vm.provision "epilogue", type: "shell", preserve_order: true, run: "once", path: "provision_epilogue.sh",
                                   env: { "UNIT_CODE" => "COMS30048", "UNIT_YEAR" => "2020", "UNIT_PATH" => "COMS30048_2020_TB-2" }
 
-  # configure trigger to force reload (to resolve USB detection problem)
-  config.trigger.after :up, :provision do |t|
-    t.run = { :inline => "vagrant reload" }
+  # reload virtual machine (to resolve USB detection problem)
+  config.trigger.after [ :up, :provision ] do |t|
+    t.run_remote = { :inline => "sudo shutdown --reboot now" }
   end
 end

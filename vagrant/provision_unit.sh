@@ -78,13 +78,13 @@ sudo udevadm control --reload-rules
 sudo udevadm trigger
 
 # teaching material: download
-for SHEET in 1-1 1-2 2 3 4 5 ; do
+for SHEET in 1 2 3 ; do
   wget --quiet --directory-prefix /home/vagrant/${UNIT_CODE} http://assets.phoo.org/${UNIT_PATH}/csdsp/sheet/lab-${SHEET}.pdf
   wget --quiet --directory-prefix /home/vagrant/${UNIT_CODE} http://assets.phoo.org/${UNIT_PATH}/csdsp/sheet/lab-${SHEET}.tar.gz
 done
 
 # teaching material: unarchive 
-for SHEET in 1-1 1-2 2 3 4 5 ; do
+for SHEET in 1 2 3 ; do
   tar --extract --gunzip --directory /home/vagrant/${UNIT_CODE} --file /home/vagrant/${UNIT_CODE}/lab-${SHEET}.tar.gz
 done
 
