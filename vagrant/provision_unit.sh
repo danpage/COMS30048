@@ -63,7 +63,6 @@ rm --force --recursive libserialport-0.1.1.tar.gz libserialport-0.1.1
 git clone --branch ${UNIT_CODE}_${UNIT_YEAR} http://www.github.com/danpage/scale-hw.git /home/vagrant/${UNIT_CODE}/scale-hw
 
 # system configuration: group membership
-sudo usermod --append --groups pico    vagrant
 sudo usermod --append --groups dialout vagrant
 sudo usermod --append --groups plugdev vagrant
 
