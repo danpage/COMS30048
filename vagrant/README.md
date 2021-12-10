@@ -46,7 +46,7 @@
      - execute
 
        ```sh
-       git clone --branch COMS30048_2020 https://www.github.com/danpage/COMS30048.git ./COMS30048
+       git clone --branch COMS30048_2021 https://www.github.com/danpage/COMS30048.git ./COMS30048
        cd ./COMS30048/vagrant
        ```
 
