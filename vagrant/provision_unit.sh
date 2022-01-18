@@ -7,9 +7,11 @@
 # LICENSE.txt within the associated archive or repository).
 
 # software install: packaged software
+sudo apt-get --quiet --assume-yes install autoconf
 sudo apt-get --quiet --assume-yes install gnuplot
 sudo apt-get --quiet --assume-yes install libgmp-dev
 sudo apt-get --quiet --assume-yes install libssl-dev
+sudo apt-get --quiet --assume-yes install libtool
 sudo apt-get --quiet --assume-yes install openssl
 sudo apt-get --quiet --assume-yes install putty
 sudo apt-get --quiet --assume-yes install python2.7
@@ -43,21 +45,21 @@ rm --force gcc-arm-none-eabi-7-2017-q4-major-linux.tar.bz2
 # software install: lpc21isp
 wget --quiet --output-document="lpc21isp_197.tar.gz" https://sourceforge.net/projects/lpc21isp/files/lpc21isp/1.97/lpc21isp_197.tar.gz
 tar --extract --file lpc21isp_197.tar.gz
-cd lpc21isp_197
+cd ./lpc21isp_197
 make
-sudo install -D --target-directory=/opt/lpc21isp/bin lpc21isp
+sudo install -D --target-directory="/opt/lpc21isp/bin" lpc21isp
 cd ..
 rm --force --recursive lpc21isp_197.tar.gz lpc21isp_197
 
 # software install: libserialport
-wget --quiet --output-document="libserialport-0.1.1.tar.gz" https://sigrok.org/download/source/libserialport/libserialport-0.1.1.tar.gz
-tar --extract --file libserialport-0.1.1.tar.gz
-cd libserialport-0.1.1
-./configure --prefix=/opt/libserialport-0.1.1
+git clone git://sigrok.org/libserialport ./libserialport-0.1.1
+cd ./libserialport-0.1.1
+./autogen.sh
+./configure --prefix="/opt/libserialport/0.1.1"
 make
 sudo make install
 cd ..
-rm --force --recursive libserialport-0.1.1.tar.gz libserialport-0.1.1
+rm --force --recursive libserialport-0.1.1
 
 # software install: SCALE repo. (e.g., for BSP)
 git clone --branch ${UNIT_CODE}_${UNIT_YEAR} http://www.github.com/danpage/scale-hw.git /home/vagrant/${UNIT_CODE}/scale-hw
@@ -77,13 +79,13 @@ sudo udevadm control --reload-rules
 sudo udevadm trigger
 
 # teaching material: download
-for SHEET in 1 2 3 ; do
+for SHEET in 1-1 1-2 2 3 4 5 ; do
   wget --quiet --directory-prefix /home/vagrant/${UNIT_CODE} http://assets.phoo.org/${UNIT_PATH}/csdsp/sheet/lab-${SHEET}.pdf
   wget --quiet --directory-prefix /home/vagrant/${UNIT_CODE} http://assets.phoo.org/${UNIT_PATH}/csdsp/sheet/lab-${SHEET}.tar.gz
 done
 
 # teaching material: unarchive 
-for SHEET in 1 2 3 ; do
+for SHEET in 1-1 1-2 2 3 4 5 ; do
   tar --extract --gunzip --directory /home/vagrant/${UNIT_CODE} --file /home/vagrant/${UNIT_CODE}/lab-${SHEET}.tar.gz
 done
 
