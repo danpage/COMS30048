@@ -7,42 +7,32 @@
 # LICENSE.txt within the associated archive or repository).
 
 # software install: packaged software
-sudo apt-get --quiet --assume-yes install autoconf
-sudo apt-get --quiet --assume-yes install gnuplot
-sudo apt-get --quiet --assume-yes install libgmp-dev
-sudo apt-get --quiet --assume-yes install libssl-dev
-sudo apt-get --quiet --assume-yes install libtool
-sudo apt-get --quiet --assume-yes install openssl
-sudo apt-get --quiet --assume-yes install putty
-sudo apt-get --quiet --assume-yes install python2.7
-sudo apt-get --quiet --assume-yes install python-pip
+sudo apt --quiet --assume-yes install autoconf
+sudo apt --quiet --assume-yes install gnuplot
+sudo apt --quiet --assume-yes install libgmp-dev
+sudo apt --quiet --assume-yes install libssl-dev
+sudo apt --quiet --assume-yes install libtool
+sudo apt --quiet --assume-yes install openssl
+sudo apt --quiet --assume-yes install putty
+sudo apt --quiet --assume-yes install python3
+sudo apt --quiet --assume-yes install python3-pip
+sudo apt --quiet --assume-yes install python3-pycryptodome
+sudo apt --quiet --assume-yes install python3-venv
+sudo apt --quiet --assume-yes install python3-wheel
+sudo apt --quiet --assume-yes install sagemath
 
-sudo pip install capstone  --upgrade --upgrade-strategy=eager
-sudo pip install intelhex  --upgrade --upgrade-strategy=eager
-sudo pip install numpy     --upgrade --upgrade-strategy=eager
-sudo pip install picoscope --upgrade --upgrade-strategy=eager
-sudo pip install pycrypto  --upgrade --upgrade-strategy=eager
-sudo pip install pyserial  --upgrade --upgrade-strategy=eager
-sudo pip install scipy     --upgrade --upgrade-strategy=eager
-sudo pip install unicorn   --upgrade --upgrade-strategy=eager
+# software install: PicoScope application, Software Development Kit (SDK), etc.
+wget --quiet --output-document - https://labs.picotech.com/Release.gpg.key | sudo apt-key add -
+sudo echo "deb https://labs.picotech.com/rc/picoscope7/debian/ picoscope main" > /etc/apt/sources.list.d/picoscope7.list
+sudo apt --quiet --assume-yes update
+sudo apt --quiet --assume-yes install picoscope
 
-# software install: libpng12 (needed for PicoScope application)
-wget --quiet --output-document="libpng12-0_1.2.54-1ubuntu1.1_amd64.deb" http://security.ubuntu.com/ubuntu/pool/main/libp/libpng/libpng12-0_1.2.54-1ubuntu1.1_amd64.deb
-sudo dpkg --install libpng12-0_1.2.54-1ubuntu1.1_amd64.deb
-rm --force libpng12-0_1.2.54-1ubuntu1.1_amd64.deb
-
-# software install: PicoScope
-sudo echo "deb https://labs.picotech.com/debian/ picoscope main" > /etc/apt/sources.list.d/picoscope.list
-wget --quiet --output-document - https://labs.picotech.com/debian/dists/picoscope/Release.gpg.key | sudo apt-key add -
-sudo apt-get --quiet --assume-yes update
-sudo apt-get --quiet --assume-yes install picoscope
-
-# software install: ARM GCC tool-chain
+# software install: ARM-based GCC tool-chain
 wget --quiet --output-document="gcc-arm-none-eabi-7-2017-q4-major-linux.tar.bz2" https://developer.arm.com/-/media/Files/downloads/gnu-rm/7-2017q4/gcc-arm-none-eabi-7-2017-q4-major-linux.tar.bz2
-sudo tar --extract --transform 's|gcc-arm-none-eabi-7-2017-q4-major|gcc-arm-none-eabi/7-2017-q4-major|' --directory /opt --file gcc-arm-none-eabi-7-2017-q4-major-linux.tar.bz2
+sudo tar --extract --transform "s|gcc-arm-none-eabi-7-2017-q4-major|gcc-arm-none-eabi/7-2017-q4-major|" --directory /opt --file gcc-arm-none-eabi-7-2017-q4-major-linux.tar.bz2
 rm --force gcc-arm-none-eabi-7-2017-q4-major-linux.tar.bz2
 
-# software install: lpc21isp
+# software install: lpc21isp programming tool
 wget --quiet --output-document="lpc21isp_197.tar.gz" https://sourceforge.net/projects/lpc21isp/files/lpc21isp/1.97/lpc21isp_197.tar.gz
 tar --extract --file lpc21isp_197.tar.gz
 cd ./lpc21isp_197
@@ -70,13 +60,12 @@ sudo usermod --append --groups plugdev vagrant
 
 # system configuration: udev rules
 sudo cat > /etc/udev/rules.d/99-scale.rules <<EOF
-# SCALE board
-SUBSYSTEM=="tty", ACTION=="add", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", GROUP:="vagrant", MODE:="0666", SYMLINK+="scale-board"
-# SCALE scope (i.e., PicoScope)
-SUBSYSTEM=="usb", ACTION=="add", ATTRS{idVendor}=="0ce9", ATTRS{idProduct}=="1016", GROUP:="vagrant", MODE:="0666", SYMLINK+="scale-scope"
+# SCALE board (i.e., FTDI-based UART)
+ACTION!="remove", SUBSYSTEM=="tty", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6001", GROUP:="plugdev", MODE:="0666", SYMLINK+="scale-board"
+# SCALE scope (i.e., PicoScope 2206B)
+ACTION!="remove", SUBSYSTEM=="usb", ATTRS{idVendor}=="0ce9", ATTRS{idProduct}=="1016", GROUP:="plugdev", MODE:="0666", SYMLINK+="scale-scope"
 EOF
-sudo udevadm control --reload-rules
-sudo udevadm trigger
+sudo udevadm control --reload-rules && sudo udevadm trigger
 
 # teaching material: download
 for SHEET in 1-1 1-2 2 3 4 5 ; do
