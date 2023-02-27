@@ -13,6 +13,13 @@ More specifically,
   houses
   a unit-specific,
   [Vagrant](https://www.vagrantup.com)-based 
-  VM configuration.
+  VM configuration,
+
+- [`./docs`](./docs)
+  houses 
+  a 
+  "[Blackboard](https://www.blackboard.com)-free"
+  mirror of the unit web-page, served via
+  [`https://www.phoo.org/COMS30048`](https://www.phoo.org/COMS30048).
 
 <!--- -------------------------------------------------------------------- --->
